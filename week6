@@ -1,0 +1,49 @@
+select emp_name
+from employee m
+where m.emp_no in
+    (select mgr_no
+     from employee)
+     and m.sal>(select avg(n.sal)
+				from employee n
+                where n.mgr_no=m.emp_no);
+
+
+
+select * from employee where emp_no=
+(select c.emp_no from incentives c
+where c.incentive_amt=                              
+(select max(b.incentive_amt) from incentives b
+where b.incentive_amt<(select max(a.incentive_amt) from incentives a
+where a.incentive_date between "2021-01-01" and "2021-01-31")
+                             and incentive_date between "2021-01-01" and "2021-01-31"));
+                             
+                             
+                             
+select *
+from employee emp
+where emp.emp_name = any(
+select e2.emp_name
+from employee e, employee e2
+where e2.emp_no=e.mgr_no and e2.d_no = e.d_no and e.emp_name = any(
+select e1.emp_name
+from employee e1, employee e0
+where e1.emp_no=e0.mgr_no and e1.d_no = e0.d_no
+group by e1.mgr_no
+having count(e1.emp_no)>1)
+);
+
+                             
+                             
+                             
+                             
+				
+                
+                
+ select e.emp_name from employee e where e.d_no=(select d_no from employee where e.mgr_no=emp_no);     
+ 
+ 
+select emp_name from employee where emp_no in(select distinct mgr_no
+from employee
+where emp_no in (select distinct mgr_no
+from employee
+where emp_no in(select distinct mgr_no from employee)));
