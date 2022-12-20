@@ -1,0 +1,76 @@
+create database Supplier_1bm21cs033;
+use Supplier_1bm21cs033;
+create table catalog(
+sid varchar(10),
+pid varchar(10),
+cost int,
+foreign key(sid)references supplier(sid),
+foreign key(pid)references parts(pid)
+);
+create table supplier(
+sid varchar(10),
+sname varchar(10),
+city varchar(10),
+primary key (sid)
+);
+create table parts(
+pid varchar(10),
+pname varchar(10),
+color varchar(10),
+primary key(pid)
+);
+ 
+ 
+ insert into supplier values (10001,'Acmewidget','Bengaluru');
+insert into supplier values (10002,'Johns','Kolkata');
+insert into supplier values (10003,'Vimal','Mumbai');
+insert into supplier values (10004,'Reliance','Delhi');
+
+insert into parts values (20001,'Book','red');
+insert into parts values (20002,'Pen','red');
+insert into parts values (20003,'Pencil','green');
+insert into parts values (20004,'Mobile','green');
+insert into parts values (20005,'Charger','black');
+
+insert into catalog values (10001,20001,10);
+insert into catalog values (10001,20002,10);
+insert into catalog values (10001,20003,30);
+insert into catalog values (10001,20004,10);
+insert into catalog values (10001,20005,10);
+insert into catalog values (10002,20001,10);
+insert into catalog values (10002,20002,20);
+insert into catalog values (10003,20003,30);
+insert into catalog values (10004,20003,40);
+
+
+
+select pname from parts where pid in(select pid from catalog);
+
+
+
+
+
+
+select sname from supplier where sid in(select sid from catalog  group by sid having count(pid)=(select count(pid) from parts));
+
+
+
+
+
+
+select sname from supplier where sid in (select sid from catalog where pid in(select pid from parts where color='red'));
+
+
+select pname from parts where pid not in
+(select a.pid from catalog a,catalog b where a.pid=b.pid and a.sid!=b.sid);
+
+
+
+
+
+select a.sid from catalog a where cost>(select avg(b.cost) from catalog b where b.pid=a.pid group by b.pid);
+
+
+
+select  s.sname from supplier s,catalog a where s.sid=a.sid and a.cost=
+(select max(cost) from catalog where a.pid=pid group by pid);
